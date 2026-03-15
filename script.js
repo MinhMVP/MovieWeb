@@ -18,7 +18,7 @@ let wl = JSON.parse(localStorage.getItem('lum-wl') || '[]');
 let searchTimer = null;
 
 /* ═══════════════════════════════════════════════════
-   API
+   API & UTILS
 ═══════════════════════════════════════════════════ */
 async function api(ep) {
   try {
@@ -42,18 +42,12 @@ function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
-/* ═══════════════════════════════════════════════════
-   LOADING
-═══════════════════════════════════════════════════ */
 function prog(p, msg) {
   document.getElementById('lb').style.width = p + '%';
   if (msg) document.getElementById('lst').textContent = msg;
 }
 function hideLs() { setTimeout(() => document.getElementById('ls').classList.add('hide'), 500); }
 
-/* ═══════════════════════════════════════════════════
-   TOAST
-═══════════════════════════════════════════════════ */
 function toast(msg) {
   const el = document.getElementById('toast');
   el.textContent = msg; el.classList.add('show');
@@ -61,7 +55,7 @@ function toast(msg) {
 }
 
 /* ═══════════════════════════════════════════════════
-   NAV
+   NAV & KEYBOARD
 ═══════════════════════════════════════════════════ */
 window.addEventListener('scroll', () => {
   document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
@@ -74,7 +68,14 @@ function goSection(id) {
   showHome();
   setTimeout(() => { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 60);
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeSearch(); } });
+// Bấm ESC sẽ thoát Rạp phim -> Modal -> Tìm kiếm
+document.addEventListener('keydown', e => { 
+  if (e.key === 'Escape') { 
+    if(typeof closeTheater === 'function') closeTheater(); 
+    closeModal(); 
+    closeSearch(); 
+  } 
+});
 
 /* ═══════════════════════════════════════════════════
    PAGES
@@ -222,7 +223,7 @@ function addHeroWL() { if (heroMovie) addToWL(heroMovie); }
 function openHeroModal() { if (heroMovie) openModal(heroMovie.slug || heroMovie._id); }
 
 /* ═══════════════════════════════════════════════════
-   ▶ VIDEO PLAYER
+   ▶ THEATER PLAYER (Full Tab Mode)
 ═══════════════════════════════════════════════════ */
 function loadEpisodes(episodes) {
   curEpisodes = episodes || [];
@@ -266,34 +267,37 @@ function playEp(embedUrl, epName, epSlug, btn) {
   if (!embedUrl) { toast('Không có link phát cho tập này'); return; }
   activeEpSlug = epSlug;
 
-  // Mark active button
+  // Đổi màu nút chọn tập
   document.querySelectorAll('.epb').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
 
-  // Set iframe src
-  document.getElementById('vframe').src = embedUrl;
-  document.getElementById('epname').textContent = epName || 'Full';
+  // Mở Rạp Chiếu Phim (Theater Mode)
+  const theater = document.getElementById('theater-mode');
+  const frame = document.getElementById('theater-frame');
+  const title = document.getElementById('theater-title');
+  
+  const filmName = document.getElementById('mtitle').textContent;
+  title.textContent = `${filmName} - ${epName || 'Full'}`;
+  
+  frame.src = embedUrl;
+  theater.classList.add('open');
+  
+  const wp = document.getElementById('wp');
+  if (wp) wp.style.display = 'none';
+}
 
-  // Show player, hide prompt
-  document.getElementById('player-section').style.display = 'block';
-  document.getElementById('wp').style.display = 'none';
-
-  // Scroll player into view
-  setTimeout(() => {
-    document.getElementById('player-section').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }, 100);
+function closeTheater() {
+  const theater = document.getElementById('theater-mode');
+  const frame = document.getElementById('theater-frame');
+  if(theater) theater.classList.remove('open');
+  if(frame) frame.src = ''; // Tắt video để dừng tiếng
 }
 
 function closePlayer() {
-  const ps = document.getElementById('player-section');
-  const iframe = document.getElementById('vframe');
-  // Clear src to stop video/audio
-  if (iframe) iframe.src = '';
-  if (ps) ps.style.display = 'none';
-  const wp = document.getElementById('wp');
-  if (wp) wp.style.display = curEpisodes.length ? 'block' : 'none';
   activeEpSlug = null;
   document.querySelectorAll('.epb').forEach(b => b.classList.remove('active'));
+  const wp = document.getElementById('wp');
+  if (wp) wp.style.display = curEpisodes.length ? 'block' : 'none';
 }
 
 function playFirst() {
@@ -321,7 +325,6 @@ async function openModal(slug) {
   document.getElementById('castw').style.display = 'none';
   document.getElementById('ep-section').style.display = 'none';
   document.getElementById('wp').style.display = 'none';
-  document.getElementById('player-section').style.display = 'none';
   document.getElementById('mbimg').className = 'mbp'; document.getElementById('mbimg').innerHTML = '🎬';
   document.getElementById('mposter').className = 'mpp'; document.getElementById('mposter').innerHTML = '🎬';
 
@@ -379,7 +382,10 @@ async function openModal(slug) {
 
 function closeModal() {
   document.getElementById('mo').classList.remove('open');
-  document.body.style.overflow = ''; closePlayer(); curMovie = null;
+  document.body.style.overflow = ''; 
+  closeTheater(); 
+  closePlayer(); 
+  curMovie = null;
 }
 function closeModalBg(e) { if (e.target === document.getElementById('mo')) closeModal(); }
 function toggleCurWL() {
@@ -413,7 +419,6 @@ async function doSearch(q) {
   if (!q.trim()) { el.innerHTML = ''; return; }
   el.innerHTML = '<p style="color:var(--muted);font-size:.82rem;width:100%;text-align:center">Đang tìm...</p>';
   searchTimer = setTimeout(async () => {
-    // GET /tim-kiem?keyword=[keyword]
     const data = await api('/tim-kiem?keyword=' + encodeURIComponent(q));
     const results = getItems(data);
     if (!results.length) { el.innerHTML = `<p style="color:var(--muted);font-size:.82rem;width:100%;text-align:center">Không tìm thấy "${esc(q)}"</p>`; return; }
@@ -451,28 +456,24 @@ async function filterCountry(slug, btn) {
   renderRow('row-country', getItems(data).slice(0, 20));
 }
 
-// Filter cartoon section by sub-genre slug
+// Cập nhật lấy theo đúng Slug con của API
 async function filterCartoon(slug, btn) {
   document.querySelectorAll('#cartoon-tabs .ctb').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   const el = document.getElementById('row-cartoon');
   el.innerHTML = '<div class="sk"></div>'.repeat(6);
-  // Always intersect with phim-hoat-hinh by using the genre slug
-  // For "Tất Cả" we use the full cartoonList already fetched
+  
   if (slug === 'phim-hoat-hinh') {
     renderRow('row-cartoon', cartoonList.slice(0, 20));
     return;
   }
-  // Fetch that genre then client-filter to animation type
+  
+  // Lấy phim theo đúng Thể loại con
   const data = await api('/the-loai/' + slug + '?page=1');
-  const movies = getItems(data).filter(m =>
-    (m.type === 'animation') ||
-    (m.category || []).some(c => c.slug === 'phim-hoat-hinh')
-  );
+  const movies = getItems(data);
   renderRow('row-cartoon', movies.slice(0, 20));
 }
 
-// Load page 2 of animation films
 async function loadMoreCartoon() {
   toast('Đang tải thêm hoạt hình...');
   const data = await api('/the-loai/phim-hoat-hinh?page=2');
