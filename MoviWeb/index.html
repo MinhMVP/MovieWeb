@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>LUMIÈRE — Cinema Streaming</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -113,11 +113,11 @@
     </div>
     <div class="ct-wrap" id="cartoon-tabs">
       <button class="ctb active" onclick="filterCartoon('phim-hoat-hinh', this)">Tất Cả</button>
-      <button class="ctb" onclick="filterCartoon('phim-gia-dinh', this)">Gia Đình</button>
-      <button class="ctb" onclick="filterCartoon('phim-phieu-luu', this)">Phiêu Lưu</button>
-      <button class="ctb" onclick="filterCartoon('phim-hai', this)">Hài Hước</button>
-      <button class="ctb" onclick="filterCartoon('phim-hanh-dong', this)">Hành Động</button>
-      <button class="ctb" onclick="filterCartoon('phim-bi-an', this)">Bí Ẩn</button>
+      <button class="ctb" onclick="filterCartoon('gia-dinh', this)">Gia Đình</button>
+      <button class="ctb" onclick="filterCartoon('phieu-luu', this)">Phiêu Lưu</button>
+      <button class="ctb" onclick="filterCartoon('hai-huoc', this)">Hài Hước</button>
+      <button class="ctb" onclick="filterCartoon('hanh-dong', this)">Hành Động</button>
+      <button class="ctb" onclick="filterCartoon('bi-an', this)">Bí Ẩn</button>
     </div>
     <div class="mr" id="row-cartoon">
       <div class="sk"></div><div class="sk"></div><div class="sk"></div>
@@ -184,18 +184,6 @@
         </div>
       </div>
 
-      <div class="ps" id="player-section">
-        <div class="ph">
-          <span class="ptl">▶ Đang Xem: <span id="epname">—</span></span>
-          <button class="pcb" onclick="closePlayer()">✕ Đóng</button>
-        </div>
-        <div class="pc">
-          <iframe id="vframe" src="" allowfullscreen
-            allow="autoplay; fullscreen; picture-in-picture"
-            frameborder="0" scrolling="no"></iframe>
-        </div>
-      </div>
-
       <div class="eps" id="ep-section">
         <div class="epsh">
           <span class="ssub">Chọn Tập</span>
@@ -227,6 +215,16 @@
         <div class="castr" id="castrow"></div>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="theater-overlay" id="theater-mode">
+  <div class="theater-header">
+    <span id="theater-title">Đang xem phim</span>
+    <button class="theater-close" onclick="closeTheater()">✕ Đóng</button>
+  </div>
+  <div class="theater-video">
+    <iframe id="theater-frame" src="" allowfullscreen allow="autoplay; fullscreen; picture-in-picture" frameborder="0" scrolling="no"></iframe>
   </div>
 </div>
 
