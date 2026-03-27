@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>LUMIÈRE — Xem Phim Online</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="ls">
+  <div class="llogo">LUMIÈRE<span>.</span></div>
+  <div class="lbw"><div class="lb" id="lb"></div></div>
+  <div class="ltxt" id="ltxt">Đang kết nối...</div>
+</div>
+
+<nav id="nav">
+  <div class="nlogo" onclick="showHome()">LUMIÈRE<span>.</span></div>
+  <ul class="nlinks">
+    <li><a class="act" onclick="showHome();setAct(this)">Trang Chủ</a></li>
+    <li><a onclick="goSec('tsec');setAct(this)">Mới Cập Nhật</a></li>
+    <li><a onclick="goSec('csec');setAct(this)">Hoạt Hình</a></li>
+    <li><a onclick="goSec('gsec');setAct(this)">Thể Loại</a></li>
+    <li><a onclick="showWL();setAct(this)">Danh Sách</a></li>
+  </ul>
+  <div class="nsearch" onclick="openSearch()">
+    <span class="nsearch-ic">⌕</span>
+    <input placeholder="Tìm tên phim, diễn viên..." readonly>
+  </div>
+  <button class="nwl" onclick="showWL()">♥ Danh Sách <span id="wlbadge"></span></button>
+</nav>
+
+<div id="home-pg" class="page show-page" style="padding:0">
+  <div class="hero">
+    <div class="hbg" id="hbg"></div>
+    <div class="hov"></div>
+    <div class="hcon">
+      <div class="htags">
+        <span class="htag th">🔥 Đề Cử Nóng</span>
+        <span class="htag ty" id="hyr">2025</span>
+        <span class="htag tep" id="hep" style="display:none"></span>
+      </div>
+      <h1 class="htitle" id="htitle">Đang tải...</h1>
+      <p class="hdesc" id="hdesc"></p>
+      <div class="hmeta" id="hmeta"></div>
+      <button class="hbtn" onclick="watchHero()">▶ Phát Ngay</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <section class="sec" id="tsec">
+      <div class="sec-h">
+        <h2 class="sec-t">Mới Cập Nhật</h2>
+        <button class="sec-m" onclick="loadMoreT()">Xem thêm ›</button>
+      </div>
+      <div class="mr" id="row-t"></div>
+    </section>
+
+    <section class="sec">
+      <div class="sec-h"><h2 class="sec-t">Phim Bộ Gây Cấn</h2></div>
+      <div class="mr" id="row-s"></div>
+    </section>
+
+    <div class="dv"></div>
+
+    <section class="sec" id="csec">
+      <div class="sec-h">
+        <h2 class="sec-t">Siêu Phẩm Hoạt Hình</h2>
+        <button class="sec-m" onclick="loadMoreC()">Xem thêm ›</button>
+      </div>
+      <div class="gtabs" id="ctabs">
+        <button class="gt act" onclick="filterC('phim-hoat-hinh',this)">Tất Cả</button>
+        <button class="gt" onclick="filterC('phim-gia-dinh',this)">Gia Đình</button>
+        <button class="gt" onclick="filterC('phim-phieu-luu',this)">Phiêu Lưu</button>
+        <button class="gt" onclick="filterC('phim-hai',this)">Hài Hước</button>
+        <button class="gt" onclick="filterC('phim-hanh-dong',this)">Hành Động</button>
+        <button class="gt" onclick="filterC('phim-bi-an',this)">Bí Ẩn</button>
+      </div>
+      <div class="mr" id="row-c"></div>
+    </section>
+
+    <section class="sec">
+      <div class="sec-h"><h2 class="sec-t">Kinh Dị Rùng Rợn</h2></div>
+      <div class="mr" id="row-h"></div>
+    </section>
+
+    <div class="dv"></div>
+
+    <section class="sec" id="gsec">
+      <div class="sec-h"><h2 class="sec-t">Khám Phá Thể Loại</h2></div>
+      <div class="gtabs" id="gtabs">
+        <button class="gt act" onclick="filterG('all',this)">Tất Cả</button>
+      </div>
+      <div class="mr" id="row-g"></div>
+    </section>
+
+    <section class="sec" id="qgsec">
+      <div class="sec-h"><h2 class="sec-t">Theo Quốc Gia</h2></div>
+      <div class="gtabs" id="qgtabs"></div>
+      <div class="mr" id="row-qg"></div>
+    </section>
+  </div>
+  
+  <footer>
+    <div class="ftb">LUMIÈRE<span>.</span></div>
+    <div class="ftl">
+      <a href="https://vsmov.com" target="_blank">vsmov.com</a>
+      <a href="#">GitHub</a><a href="#">Portfolio</a>
+    </div>
+    <div class="ftc">© 2025 Lumière · Powered by vsmov.com</div>
+  </footer>
+</div>
+
+<div id="wl-pg" class="page" style="padding: 80px 3vw 4rem;">
+  <div class="pg-h">
+    <h1 style="font-size:1.7rem;font-weight:800;margin-bottom:.3rem">Danh Sách <span style="color:var(--red)">Của Tôi</span></h1>
+    <p style="font-size:.8rem;color:var(--muted)" id="wlsub">0 phim đã lưu</p>
+  </div>
+  <div class="wlg" id="wlg"></div>
+  <div id="wlem" class="empt" style="display:none">
+    <div class="ei">🎬</div>
+    <p>Danh sách của bạn đang trống</p>
+    <p style="font-size:.73rem;margin-top:.3rem;color:var(--muted2)">Thêm phim để xem sau</p>
+  </div>
+</div>
+
+<div id="watch-pg" class="page" style="padding: 80px 3vw 4rem;">
+  <div class="w-container">
+    
+    <div class="w-player-box" id="wp-box">
+      <div class="w-ph">
+        <span class="w-phl">▶ Đang phát: <span id="w-epnow" style="color:var(--red)">—</span></span>
+        <span class="w-phr" id="w-svname">Server</span>
+      </div>
+      <div class="w-iframe-wrap">
+        <iframe id="vframe" src="" allowfullscreen allow="autoplay;fullscreen;picture-in-picture" frameborder="0"></iframe>
+        <div id="w-noplayer" class="w-noplayer" style="display:none;">
+          <div style="font-size:3rem;margin-bottom:1rem;">🎬</div>
+          <div id="w-notxt">Phim đang cập nhật, vui lòng quay lại sau!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-grid">
+      <div class="w-info">
+        <h1 class="w-title" id="w-title">Đang tải...</h1>
+        <div class="w-origin" id="w-origin"></div>
+        <div class="w-tags" id="w-tags"></div>
+        <div class="w-stats" id="w-stats"></div>
+        
+        <div class="w-actions">
+          <button class="bghost" id="w-wlbtn" onclick="toggleWatchWL()">♥ Lưu Danh Sách</button>
+          <button class="bghost" onclick="shareFilm()">↑ Chia Sẻ</button>
+        </div>
+
+        <p class="w-desc" id="w-desc"></p>
+        
+        <div id="w-cast-wrap" style="display:none; margin-top:1.5rem">
+          <div class="w-sec-title">Diễn Viên</div>
+          <div class="w-cast" id="w-cast"></div>
+        </div>
+      </div>
+
+      <div class="w-eps" id="w-eps-wrap">
+        <div class="w-sec-title" style="margin-bottom: 1rem; color:var(--red)">CHỌN TẬP PHIM</div>
+        <div class="epstabs" id="w-stabs" style="margin-bottom: 1rem;"></div>
+        <div class="epgrid" id="w-epgrid" style="max-height: 300px;"></div>
+      </div>
+    </div>
+
+    <div class="dv" style="margin: 3rem 0;"></div>
+
+    <div class="w-related">
+      <div class="sec-h"><h2 class="sec-t">Có Thể Bạn Sẽ Thích</h2></div>
+      <div class="mr" id="row-related"></div>
+    </div>
+    
+  </div>
+</div>
+
+<div class="sov" id="sov">
+  <button class="sov-x" onclick="closeSearch()">✕</button>
+  <div class="sov-w">
+    <span class="sov-ic">⌕</span>
+    <input class="sov-inp" id="sinp" placeholder="Tìm tên phim, diễn viên..." oninput="doSearch(this.value)" autocomplete="off">
+  </div>
+  <div class="sov-res" id="sres"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
